@@ -13,6 +13,10 @@ if !exists("g:vroom_use_colors")
   let g:vroom_use_colors = !has('gui_running')
 endif
 
+if !exists("g:vroom_use_documentation_format")
+  let g:vroom_use_documentation_format = 0
+endif
+
 if !exists("g:vroom_clear_screen")
   let g:vroom_clear_screen = 1
 endif
@@ -157,7 +161,7 @@ endfunction
 " Internal: Get the right test runner for the file.
 function s:DetermineRunner(filename)
   if match(a:filename, '_spec.rb') != -1
-    return s:test_runner_prefix . g:vroom_spec_command . s:color_flag
+    return s:test_runner_prefix . g:vroom_spec_command . s:color_flag . s:documentation_flag
   elseif match(a:filename, '\.feature') != -1
     return s:test_runner_prefix . g:vroom_cucumber_path . s:color_flag
   elseif match(a:filename, "_test.rb") != -1
@@ -176,8 +180,10 @@ function s:PrepareToRunTests(filename)
   call s:SetTestRunnerPrefix(a:filename)
   if s:usingZeus()
     let s:color_flag = ""
+    let s:documentation_flag = ""
   else
     call s:SetColorFlag()
+    call s:SetDocumentationFlag()
   endif
 endfunction
 
@@ -340,6 +346,17 @@ function s:SetColorFlag()
     endif
   endif
 
+endfunction
+
+" Internal: Sets s:documentation_flag to the correct format flag as configured
+function s:SetDocumentationFlag()
+  if g:vroom_rspec_version == "2.x"
+    if g:vroom_use_documentation_format
+      let s:documentation_flag = " --format documentation"
+    else
+      let s:documentation_flag = ""
+    endif
+  endif
 endfunction
 
 " }}}
