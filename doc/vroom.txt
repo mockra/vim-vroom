@@ -139,10 +139,9 @@ g:vroom_use_zeus                                      *vroom_use_zeus*
                         bundler.
                         Default: 1
 
-g:vroom_use_documentation_flag                   *vroom_use_documentation_flag*
-                        Run tests using the rspec documentation format, only
-                        available for rspec 2.X
-                        Default: 0
+g:vroom_rspec_format                                       *vroom_rspec_format*
+                        Specify an output format to use with rspec.
+                        Default: 'progress'
 
 ===============================================================================
 LICENSE                                                         *vroom-license*

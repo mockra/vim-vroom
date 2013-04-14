@@ -337,7 +337,6 @@ endfunction
 
 " Internal: Sets s:color_flag to the correct color flag as configured
 function s:SetColorFlag()
-  let s:color_flag = ""
   if s:usingZeus()
     let s:color_flag = ""
   else
