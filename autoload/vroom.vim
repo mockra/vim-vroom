@@ -174,11 +174,7 @@ function s:PrepareToRunTests(filename)
   endif
   call s:WriteOrWriteAll()
   call s:SetTestRunnerPrefix(a:filename)
-  if s:usingZeus()
-    let s:color_flag = ""
-  else
-    call s:SetColorFlag()
-  endif
+  call s:SetColorFlag()
 endfunction
 
 " Internal: Runs a command though vim or vmux
@@ -326,20 +322,23 @@ endfunction
 
 " Internal: Sets s:color_flag to the correct color flag as configured
 function s:SetColorFlag()
-  if g:vroom_rspec_version == "2.x"
-    if g:vroom_use_colors
-      let s:color_flag = " --color"
-    else
-      let s:color_flag = " --no-color"
-    endif
+  if s:usingZeus()
+    let s:color_flag = ""
   else
-    if g:vroom_use_colors
-      let s:color_flag = " --color"
+    if g:vroom_rspec_version == "2.x"
+      if g:vroom_use_colors
+        let s:color_flag = " --color"
+      else
+        let s:color_flag = " --no-color"
+      endif
     else
-      let s:color_flag = ""
+      if g:vroom_use_colors
+        let s:color_flag = " --color"
+      else
+        let s:color_flag = ""
+      endif
     endif
   endif
-
 endfunction
 
 " }}}
