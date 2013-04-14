@@ -13,6 +13,10 @@ if !exists("g:vroom_use_colors")
   let g:vroom_use_colors = !has('gui_running')
 endif
 
+if !exists("g:vroom_rspec_format")
+  let g:vroom_rspec_format = 'progress'
+endif
+
 if !exists("g:vroom_clear_screen")
   let g:vroom_clear_screen = 1
 endif
@@ -157,9 +161,9 @@ endfunction
 " Internal: Get the right test runner for the file.
 function s:DetermineRunner(filename)
   if match(a:filename, '_spec.rb') != -1
-    return s:test_runner_prefix . g:vroom_spec_command . s:color_flag
+    return s:test_runner_prefix . g:vroom_spec_command . s:color_flag . s:format_flag
   elseif match(a:filename, '\.feature') != -1
-    return s:test_runner_prefix . g:vroom_cucumber_path . s:color_flag
+    return s:test_runner_prefix . g:vroom_cucumber_path . s:color_flag 
   elseif match(a:filename, "_test.rb") != -1
     return s:test_runner_prefix . g:vroom_test_unit_command
   end
@@ -167,7 +171,7 @@ endfunction
 
 " Internal: Perform all the steps we need to perform before actually running
 " the tests: clear the screen, write the files, set the test_runner_prefix,
-" set the color_flag.
+" set the color_flag, set the format_flag
 function s:PrepareToRunTests(filename)
   if g:vroom_clear_screen
     call s:ClearScreen()
@@ -175,6 +179,7 @@ function s:PrepareToRunTests(filename)
   call s:WriteOrWriteAll()
   call s:SetTestRunnerPrefix(a:filename)
   call s:SetColorFlag()
+  call s:SetFormatFlag()
 endfunction
 
 " Internal: Runs a command though vim or vmux
@@ -320,8 +325,19 @@ function s:SetNearestTest()
   let t:vroom_nearest_test = line('.')
 endfunction
 
+" " Internal: Sets s:format_flag to the correct format flag as configured
+function s:SetFormatFlag()
+  if g:vroom_rspec_format != ""
+    let s:format_flag = " --format " . g:vroom_rspec_format
+  else
+    let s:format_flag = ""
+  endif
+endfunction
+
+
 " Internal: Sets s:color_flag to the correct color flag as configured
 function s:SetColorFlag()
+  let s:color_flag = ""
   if s:usingZeus()
     let s:color_flag = ""
   else
